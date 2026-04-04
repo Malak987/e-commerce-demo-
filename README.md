@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🛍️ E-Commerce Prof
 
 <div align="center">
@@ -210,3 +211,6 @@ Adapters are registered in `AppInitializer.init()` before `runApp()`.
 ## 👨‍💻 Author
 
 Built with ❤️ using Flutter & DummyJSON API.
+=======
+# e-commerce-demo-
+>>>>>>> 8376569f28264255ced37d5d3b164322891b711e
