@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../Business_logic_layer/cart/cart_cubit.dart';
 import '../../../Business_logic_layer/favorite/favorite_cubit.dart';
+import '../../../Business_logic_layer/recipes/recipes_cubit.dart';
 import '../../../data_layer/Recipes/recipes.dart';
+import '../../../data_layer/Recipes/recipes_repository.dart';
+import '../../../data_layer/Recipes/recipes_webservices.dart';
 import '../../../data_layer/products/products.dart';
 import '../../../styles/color.dart';
 import '../products/singleProduct.dart';
@@ -242,7 +245,19 @@ class _RecipeFavoriteCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: InkWell(
-                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => SingleRecipeScreen(recipeId: recipe.id!.toInt()))),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                          create: (_) => RecipesCubit(
+                            repository: RecipesRepository(
+                              recipesWebservices: RecipesWebservices(),
+                            ),
+                          ),
+                          child: SingleRecipeScreen(recipeId: recipe.id!.toInt()),
+                        ),
+                      ),
+                    ),
                     child: recipe.image != null ? Image.network(recipe.image!, width: double.infinity, fit: BoxFit.cover) : const Icon(Icons.image_not_supported),
                   ),
                 ),
