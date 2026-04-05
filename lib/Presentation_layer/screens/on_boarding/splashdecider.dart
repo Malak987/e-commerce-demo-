@@ -1,4 +1,6 @@
+import 'package:e_commerce_prof/Business_logic_layer/user/user_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,38 +20,39 @@ class _SplashDeciderState extends State<SplashDecider> {
   @override
   void initState() {
     super.initState();
-    // ✅ ننادي بعد أول frame يتبني
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _decide();
-    });
+    _decide();
   }
 
   Future<void> _decide() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final seenOnBoarding = prefs.getBool('seen_onboarding') ?? false;
-      final token = await UserLocalData().getToken();
+      final localData = UserLocalData();
+      final token = await localData.getToken();
       final isLoggedIn = token != null && token.isNotEmpty;
+
+      // ← احذف fetchUser من هنا خالص، MainLayout هيعملها
+
+      FlutterNativeSplash.remove();
 
       if (!mounted) return;
 
-      Widget nextScreen;
-
       if (!seenOnBoarding) {
-        nextScreen = const OnBoardingScreen();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const OnBoardingScreen()),
+        );
       } else if (isLoggedIn) {
-        nextScreen = const MainLayout();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const MainLayout()),
+        );
       } else {
-        nextScreen = LoginScreen();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => LoginScreen()),
+        );
       }
-
-      // ✅ أزيل الـ splash الأول ثم انتقل
-      FlutterNativeSplash.remove();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => nextScreen),
-      );
     } catch (e) {
       FlutterNativeSplash.remove();
       if (!mounted) return;
@@ -63,8 +66,7 @@ class _SplashDeciderState extends State<SplashDecider> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Colors.white,
-      body: SizedBox.shrink(),
+      body: SizedBox.shrink(), // ← مش بنعرض حاجة، الـ splash screen كافية
     );
   }
 }

@@ -64,4 +64,8 @@ class CartCubit extends Cubit<CartState> {
       totalQuantity: items.length,
     ));
   }
+  Future<void> clearCartOnLogout() async {
+    await _box.clear();
+    emit(CartInitialState());
+  }
 }

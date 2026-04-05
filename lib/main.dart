@@ -33,9 +33,8 @@ final AppRouter appRouter = AppRouter();
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding); // ← مهم
   await AppInitializer.init();
-
   runApp(const MyApp());
 }
 

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../Business_logic_layer/cart/cart_cubit.dart';
+import '../../../Business_logic_layer/favorite/favorite_cubit.dart';
 import '../../../Business_logic_layer/user/user_cubit.dart';
 import '../../../data_layer/user/user.dart';
 import '../../../styles/color.dart';
@@ -394,9 +396,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
-            onPressed: () {
+            onPressed: ()async {
               // تسجيل الخروج من UserCubit
-              context.read<UserCubit>().logout();
+              await context.read<UserCubit>().logout();
+              context.read<CartCubit>().clearCartOnLogout();
+              context.read<FaveroiteCubit>().clearFavoritesOnLogout();
 
               // الانتقال لشاشة Login
               Navigator.pushAndRemoveUntil(

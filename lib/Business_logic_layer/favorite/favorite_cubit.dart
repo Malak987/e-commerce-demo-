@@ -47,4 +47,9 @@ class FaveroiteCubit extends Cubit<FaveroiteState> {
       favoriteRecipes:  _recipesBox.values.toList(),
     ));
   }
+  Future<void> clearFavoritesOnLogout() async {
+    await _productsBox.clear();
+    await _recipesBox.clear();
+    emit(FaveroiteInitialState());
+  }
 }
