@@ -1,34 +1,91 @@
-<<<<<<< HEAD
 # 🛍️ E-Commerce Prof
 
 <div align="center">
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=for-the-badge&logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white)
-![Bloc](https://img.shields.io/badge/Bloc%20%2F%20Cubit-9.x-FF6B6B?style=for-the-badge&logo=bloc&logoColor=white)
+![BLoC](https://img.shields.io/badge/Cubit%20%2F%20BLoC-9.x-FF6B35?style=for-the-badge)
 ![Hive](https://img.shields.io/badge/Hive-Local%20DB-FF7043?style=for-the-badge)
-![DummyJSON](https://img.shields.io/badge/API-DummyJSON-6C63FF?style=for-the-badge)
+![Dio](https://img.shields.io/badge/Dio-Networking-6C63FF?style=for-the-badge)
+![DummyJSON](https://img.shields.io/badge/API-DummyJSON-00C896?style=for-the-badge)
 
-**A full-featured Flutter e-commerce app with Clean Architecture, Cubit state management, and offline-first local storage.**
+<br/>
+
+> A full-featured Flutter e-commerce application built with **Clean Architecture**, **Cubit** state management, and **offline-first** local storage using Hive & SharedPreferences.
+
+<br/>
+
+[🚀 Getting Started](#-getting-started) · [🏗️ Architecture](#️-architecture) · [💾 Storage](#-local-storage-strategy) · [🌐 API](#-api--dummyjson)
 
 </div>
 
 ---
 
-## 📱 Features
+## ✨ Features
 
-| Feature | Description |
-|---|---|
-| 🔐 Authentication | Login with JWT token, persistent session |
-| 🛒 Shopping Cart | Add / Remove / Clear — saved locally with Hive |
-| ❤️ Wishlist | Favorite products & recipes — persisted with Hive |
-| 🍲 Recipes | Browse, search, sort, paginate recipes by tag |
-| 🗂️ Categories | Filter products by category with real-time switching |
-| 🔍 Search | Search products & recipes from API |
-| ➕ Add Product | POST new products to the API |
-| 👤 Profile | View user info, logout |
-| 🌑 Onboarding | Shown only once on first launch |
-| 💾 Offline Support | Cart & Favorites survive app restarts |
+<table>
+<tr>
+<td>
+
+**🔐 Authentication**
+- Login with JWT token
+- Persistent session across restarts
+- Auto-login on relaunch
+- Secure logout with full data cleanup
+
+</td>
+<td>
+
+**🛒 Shopping Cart**
+- Add / Remove products
+- Clear entire cart
+- Persisted locally with Hive
+- Survives app restarts & relaunch
+
+</td>
+</tr>
+<tr>
+<td>
+
+**❤️ Wishlist**
+- Favorite products & recipes
+- Toggle with one tap
+- Persisted with Hive
+- Cleared on logout (per-user data)
+
+</td>
+<td>
+
+**🍲 Recipes**
+- Browse by tags
+- Infinite scroll pagination
+- Sort by name / cook time
+- Full-text search
+
+</td>
+</tr>
+<tr>
+<td>
+
+**🗂️ Products**
+- Filter by category
+- Sort by name / price
+- Full-text search
+- Add new products (POST API)
+
+</td>
+<td>
+
+**👤 Profile**
+- View full user info & avatar
+- Wishlist shortcut
+- Logout with confirmation dialog
+
+</td>
+</tr>
+</table>
+
+**+ OnBoarding** shown only once · **Smart Splash** with auto-routing based on session
 
 ---
 
@@ -36,113 +93,159 @@
 
 ```
 lib/
-├── Business_logic_layer/       # Cubits & States
+│
+├── Business_logic_layer/              # 🧠 Cubits & States
 │   ├── cart/
+│   │   ├── cart_cubit.dart
+│   │   └── cart_state.dart
 │   ├── favorite/
 │   ├── login/
 │   ├── products/
 │   ├── recipes/
 │   └── user/
 │
-├── data_layer/                 # Models, Repositories, Web Services
+├── data_layer/                        # 📦 Models, Repos, Services
 │   ├── products/
+│   │   ├── products.dart              # Model + toJson/fromJson
+│   │   ├── products_adapter.dart      # Hive TypeAdapter (manual)
+│   │   ├── products_repository.dart
+│   │   └── products_web_services.dart
 │   ├── Recipes/
+│   │   ├── recipes.dart
+│   │   ├── recipes_adapter.dart       # Hive TypeAdapter (manual)
+│   │   ├── recipes_repository.dart
+│   │   └── recipes_webservices.dart
 │   ├── categories/
 │   ├── user/
-│   └── helper/                 # DioHelper
+│   │   ├── user.dart
+│   │   ├── user_local_data.dart       # Token + UserInfo persistence
+│   │   ├── user_repository.dart
+│   │   └── user_webservices.dart
+│   └── helper/
+│       ├── dio_helper.dart
+│       └── dio_helper_recipes.dart
 │
-├── Presentation_layer/         # UI Screens & Widgets
-│   ├── screens/
-│   │   ├── login/
-│   │   ├── mainLayout/
-│   │   ├── products/
-│   │   ├── recipes/
-│   │   ├── cart/
-│   │   ├── favorite/
-│   │   └── profile_screen/
-│   └── widgets/
+├── Presentation_layer/                # 🎨 UI Screens & Widgets
+│   └── screens/
+│       ├── on_boarding/
+│       │   ├── on_boarding_screen.dart
+│       │   └── splash_decider.dart    # Smart routing logic
+│       ├── login/
+│       ├── mainLayout/
+│       ├── products/
+│       ├── recipes/
+│       ├── cart/
+│       ├── favorite/
+│       └── profile_screen/
 │
-├── app_initializer.dart        # Hive + Dio init
-├── main.dart                   # MultiBlocProvider + AppRouter
-└── styles/                     # Colors, Strings
+├── app_initializer.dart               # Hive + Dio + SharedPrefs init
+├── main.dart                          # MultiBlocProvider + AppRouter
+└── styles/                            # Colors, Strings
 ```
 
 ---
 
-## 🧠 State Management — Cubit
+## 🧠 Cubit — State Management
 
 | Cubit | Responsibility |
 |---|---|
-| `CartCubit` | Manage cart items via Hive box |
+| `CartCubit` | Add / Remove / Clear cart — Hive persisted |
 | `FaveroiteCubit` | Toggle favorites for products & recipes |
-| `ProductsCubit` | Load, filter, sort, search, add products |
-| `RecipesCubit` | Paginate, tag-filter, sort, search recipes |
-| `UserCubit` | Fetch & cache user info |
-| `LoginCubit` | Handle login flow & token saving |
+| `ProductsCubit` | Load, filter by category, sort, search, add |
+| `RecipesCubit` | Paginate, filter by tag, sort, search |
+| `UserCubit` | Fetch & cache user, handle logout |
+| `LoginCubit` | Login flow, token saving, error states |
 
 ---
 
 ## 💾 Local Storage Strategy
 
-| Data | Storage | Reason |
+| Data | Storage | Why |
 |---|---|---|
-| 🛒 Cart items (full objects) | **Hive** | Complex objects need fast read/write |
-| ❤️ Favorite products | **Hive** | Complex objects |
-| ❤️ Favorite recipes | **Hive** | Complex objects |
-| 🔑 Access Token | **SharedPreferences** | Simple string, reliable on all Android versions |
-| 👤 User info | **SharedPreferences** | Simple key-value fields |
-| 🎬 Onboarding seen flag | **SharedPreferences** | Single boolean |
+| 🛒 Cart (full Product objects) | **Hive** | Fast R/W for complex objects |
+| ❤️ Favorite Products | **Hive** | Fast R/W for complex objects |
+| ❤️ Favorite Recipes | **Hive** | Fast R/W for complex objects |
+| 🔑 Access Token | **SharedPreferences** | Reliable on all Android versions |
+| 👤 User Info (id, name, email…) | **SharedPreferences** | Simple key-value fields |
+| 🎬 OnBoarding seen flag | **SharedPreferences** | Single boolean |
+
+### Hive Setup
+
+```dart
+// AppInitializer — runs before runApp()
+Hive.registerAdapter(ProductsAdapter()); // typeId: 1
+Hive.registerAdapter(RecipesAdapter());  // typeId: 2
+
+await Hive.openBox<Products>('cart_box');
+await Hive.openBox<Products>('fav_products_box');
+await Hive.openBox<Recipes>('fav_recipes_box');
+```
+
+> ✅ Manual TypeAdapters — no build_runner needed for storage
 
 ---
 
 ## 🌐 API — DummyJSON
 
-Base URL: `https://dummyjson.com/`
+**Base URL:** `https://dummyjson.com/`
 
-| Endpoint | Usage |
-|---|---|
-| `POST /auth/login` | User login |
-| `GET /auth/me` | Get current user |
-| `GET /products` | All products |
-| `GET /products/{id}` | Single product |
-| `GET /products/search?q=` | Search products |
-| `GET /products/category/{name}` | Products by category |
-| `GET /products/categories` | All categories |
-| `POST /products/add` | Add new product |
-| `GET /recipes` | All recipes (paginated) |
-| `GET /recipes/{id}` | Single recipe |
-| `GET /recipes/search?q=` | Search recipes |
-| `GET /recipes/tag/{tag}` | Recipes by tag |
-| `POST /recipes/add` | Add new recipe |
+| Method | Endpoint | Usage |
+|---|---|---|
+| `POST` | `/auth/login` | Login → JWT token |
+| `GET` | `/auth/me` | Current user info |
+| `GET` | `/products` | All products |
+| `GET` | `/products/{id}` | Single product |
+| `GET` | `/products/search?q=` | Search products |
+| `GET` | `/products/category/{name}` | By category |
+| `GET` | `/products/categories` | All categories |
+| `POST` | `/products/add` | Add product |
+| `GET` | `/recipes` | All recipes (paginated) |
+| `GET` | `/recipes/{id}` | Single recipe |
+| `GET` | `/recipes/search?q=` | Search recipes |
+| `GET` | `/recipes/tag/{tag}` | By tag |
+| `POST` | `/recipes/add` | Add recipe |
+| `DELETE` | `/recipes/{id}` | Delete recipe |
+
+---
+
+## 🔄 App Flow
+
+```
+App Launch
+    └── AppInitializer.init()
+          ├── Hive.initFlutter()
+          ├── Register Adapters (Products, Recipes)
+          ├── Open Hive Boxes
+          └── SharedPreferences.getInstance()
+
+              └── SplashDecider
+                    ├── seen_onboarding = false  →  OnBoarding → Login
+                    ├── token exists             →  MainLayout ✅
+                    └── no token                 →  Login
+
+Logout
+    ├── UserRepository.logout()              # clear token + user info
+    ├── CartCubit.clearCartOnLogout()        # clear Hive cart_box
+    └── FavoriteCubit.clearFavoritesOnLogout() # clear Hive fav boxes
+         └── Navigate → Login
+```
 
 ---
 
 ## 📦 Dependencies
 
 ```yaml
-# State Management
-flutter_bloc: ^9.1.1
-
-# Networking
-dio: ^5.9.2
-retrofit: ^4.9.2
-
-# Local Storage
-hive: ^2.2.3
-hive_flutter: ^1.1.0
-shared_preferences: ^2.5.5
-
-# UI
-lottie: ^3.3.2
+flutter_bloc: ^9.1.1        # State management
+dio: ^5.9.2                 # HTTP client
+retrofit: ^4.9.2            # Type-safe API calls
+hive: ^2.2.3                # Local NoSQL database
+hive_flutter: ^1.1.0        # Hive Flutter integration
+shared_preferences: ^2.5.5  # Simple key-value storage
+lottie: ^3.3.2              # Animations
 smooth_page_indicator: ^2.0.1
 flutter_native_splash: ^2.4.7
-flutter_launcher_icons: ^0.14.4
 font_awesome_flutter: ^11.0.0
-
-# Utilities
 equatable: ^2.0.8
-json_annotation: ^4.11.0
-uuid: ^4.5.3
 ```
 
 ---
@@ -151,8 +254,8 @@ uuid: ^4.5.3
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/your-username/e_commerce_prof.git
-cd e_commerce_prof
+git clone https://github.com/Malak987/e-commerce-demo-.git
+cd e-commerce-demo-
 
 # 2. Install dependencies
 flutter pub get
@@ -163,54 +266,24 @@ dart run flutter_native_splash:create
 # 4. Generate launcher icons
 dart run flutter_launcher_icons
 
-# 5. Run the app
+# 5. Run
 flutter run
 ```
 
----
-
-## 🔄 App Flow
-
-```
-Launch
-  └── SplashDecider
-        ├── First time?        → OnBoarding → Login
-        ├── Has token?         → MainLayout (auto-login)
-        └── No token?          → Login
-```
+> **Test credentials** (DummyJSON API):
+> ```
+> username: emilys
+> password: emilyspass
+> ```
 
 ---
 
-## 🧩 Hive Adapters (Manual — No Code Generation)
+## 👩‍💻 Author
 
-```dart
-// Products — typeId: 1
-class ProductsAdapter extends TypeAdapter<Products> { ... }
+<div align="center">
 
-// Recipes — typeId: 2
-class RecipesAdapter extends TypeAdapter<Recipes> { ... }
-```
+**Malak** — Flutter Developer
 
-Adapters are registered in `AppInitializer.init()` before `runApp()`.
+[![GitHub](https://img.shields.io/badge/GitHub-Malak987-181717?style=for-the-badge&logo=github)](https://github.com/Malak987/e-commerce-demo-)
 
----
-
-## 📁 Key Files
-
-| File | Purpose |
-|---|---|
-| `app_initializer.dart` | Initialize Hive, Dio, SharedPreferences |
-| `main.dart` | MultiBlocProvider, AppRouter, MaterialApp |
-| `splash_decider.dart` | Decide first screen based on token & onboarding |
-| `user_local_data.dart` | Token + user info read/write |
-| `cart_cubit.dart` | Cart logic with Hive persistence |
-| `favorite_cubit.dart` | Favorites logic with Hive persistence |
-
----
-
-## 👨‍💻 Author
-
-Built with ❤️ using Flutter & DummyJSON API.
-=======
-# e-commerce-demo-
->>>>>>> 8376569f28264255ced37d5d3b164322891b711e
+</div>
